@@ -90,7 +90,9 @@ export default function TaskCategory({ color, category, value }) {
               </div>
             ))
           ) : (
-            <p>No Task Added Yet</p>
+            <p className="text-base text-zinc-300 font-medium text-center p-2 bg-zinc-700 rounded-lg shadow-md">
+              📋 Task List is empty!
+            </p>
           )}
         </div>
       </div>

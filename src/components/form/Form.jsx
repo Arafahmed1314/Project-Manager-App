@@ -6,37 +6,40 @@ export default function Form() {
   const { showForm, setShowForm, updateValue, setUpdateValue } =
     useShowFormModal();
   const { dispatch } = useTaskContext();
-  // console.log(updateValue);
-  // Initialize formValue with the same structure as initialState
+
   const [formValue, setFormValue] = useState(
     updateValue || {
       id: crypto.randomUUID(),
       taskName: "",
       description: "",
       date: "",
-      category: "", // Default value for select
+      category: "",
     }
   );
 
   const isAdd = !updateValue;
+
   const handleOnSubmit = (event) => {
     event.preventDefault();
 
+    if (
+      !formValue.taskName ||
+      !formValue.description ||
+      !formValue.date ||
+      !formValue.category
+    ) {
+      toast.warning("⚠️ Please fill out all fields!", { autoClose: 2000 });
+      return;
+    }
+
     if (isAdd) {
       dispatch({ type: "ADD_TO_TASK", payload: formValue });
-      toast.success("✅ New task added successfully!", { autoClose: 2000 });
-
-      // setValue([...value, formValue]);
-      // console.log(formValue.id);
+      toast.success("New task added successfully!", { autoClose: 2000 });
     } else {
       dispatch({ type: "UPDATE_TASK", payload: formValue });
       toast.success("✏️ Task updated successfully!", { autoClose: 2000 });
-
-      // const updatedValue = value.map((item) =>
-      //   item.id === formValue.id ? formValue : item
-      // );
-      // setValue(updatedValue);
     }
+
     setUpdateValue(null);
     setFormValue({
       id: crypto.randomUUID(),
@@ -46,7 +49,6 @@ export default function Form() {
       category: "",
     });
     setShowForm(false);
-    // console.log(value);
   };
 
   const handleOnChange = (event) => {
@@ -74,7 +76,7 @@ export default function Form() {
             name="taskName"
             value={formValue.taskName}
             onChange={handleOnChange}
-            required
+            // required
             className="w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-white placeholder-gray-400 shadow-sm focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
@@ -89,7 +91,7 @@ export default function Form() {
             id="description"
             name="description"
             rows="3"
-            required
+            // required
             value={formValue.description}
             onChange={handleOnChange}
             className="w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-white placeholder-gray-400 shadow-sm focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -106,7 +108,7 @@ export default function Form() {
             type="date"
             id="dueDate"
             name="date"
-            required
+            // required
             value={formValue.date}
             onChange={handleOnChange}
             className="w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-white shadow-sm focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -123,7 +125,7 @@ export default function Form() {
           <select
             id="category"
             name="category"
-            required
+            // required
             value={formValue.category}
             onChange={handleOnChange}
             className="w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-white shadow-sm focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -152,7 +154,6 @@ export default function Form() {
             className="rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-800"
           >
             {isAdd ? "Create Task" : "Edit Task"}
-            {/* Create Task */}
           </button>
         </div>
       </form>
