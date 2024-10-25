@@ -1,13 +1,13 @@
-import { useSearchContext, useShowFormModal } from "../../context/Context";
+import { useSearchContext, useTaskContext } from "../../context/Context";
 import TaskCategory from "./TaskCategory";
 
 export default function TaskModal() {
-  const { value } = useShowFormModal();
+  const { state } = useTaskContext();
   const { searchValue } = useSearchContext();
-  console.log(searchValue);
-  const filterValue = value.filter((value) =>
+  const filterValue = state.taskData.filter((value) =>
     value.taskName.toLowerCase().includes(searchValue.toLowerCase())
   );
+  console.log(state);
   const todo = filterValue.filter((item) => item.category === "todo");
   const done = filterValue.filter((item) => item.category === "done");
   const progress = filterValue.filter((item) => item.category === "inprogress");

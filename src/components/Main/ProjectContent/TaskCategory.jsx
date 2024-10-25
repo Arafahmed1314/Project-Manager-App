@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
 // import { useShowFormModal } from "../../context/Context";
 import { useState } from "react";
-import { useShowFormModal } from "../../context/Context";
+import { useShowFormModal, useTaskContext } from "../../context/Context";
 import DeleteIcon from "../../SvgIcon/DeleteIcon";
 import EditIcon from "../../SvgIcon/EditIcon";
 import SortIcon from "../../SvgIcon/SortIcon";
 import PopUp from "./PopUp";
-
+import { toast } from "react-toastify";
 export default function TaskCategory({ color, category, value }) {
   const [sort, setSort] = useState(false);
   const [showPop, setShowPop] = useState(false);
@@ -18,9 +18,15 @@ export default function TaskCategory({ color, category, value }) {
     sortedItems = value.sort((a, b) => new Date(a.date) - new Date(b.date));
   }
 
-  const { setUpdateValue, setShowForm, setValue } = useShowFormModal();
+  const { setUpdateValue, setShowForm } = useShowFormModal();
+  const { dispatch } = useTaskContext();
   const handleDelete = (id) => {
-    setValue((prev) => prev.filter((value) => value.id !== id));
+    // setValue((prev) => prev.filter((value) => value.id !== id));
+    dispatch({ type: "REMOVE_FROM_TASK", payload: id });
+
+    toast.success("🗑️ Task has been removed successfully!", {
+      autoClose: 2000,
+    });
   };
   const handleDeleteTask = (res) => {
     if (res === "yes") {

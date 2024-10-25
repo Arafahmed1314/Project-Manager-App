@@ -1,15 +1,11 @@
 import { useState } from "react";
-import { useShowFormModal } from "../context/Context";
+import { useShowFormModal, useTaskContext } from "../context/Context";
+import { toast } from "react-toastify";
 
 export default function Form() {
-  const {
-    showForm,
-    setShowForm,
-    value,
-    setValue,
-    updateValue,
-    setUpdateValue,
-  } = useShowFormModal();
+  const { showForm, setShowForm, updateValue, setUpdateValue } =
+    useShowFormModal();
+  const { dispatch } = useTaskContext();
   // console.log(updateValue);
   // Initialize formValue with the same structure as initialState
   const [formValue, setFormValue] = useState(
@@ -18,7 +14,7 @@ export default function Form() {
       taskName: "",
       description: "",
       date: "",
-      category: "todo", // Default value for select
+      category: "", // Default value for select
     }
   );
 
@@ -27,13 +23,19 @@ export default function Form() {
     event.preventDefault();
 
     if (isAdd) {
-      setValue([...value, formValue]);
-      console.log(formValue.id);
+      dispatch({ type: "ADD_TO_TASK", payload: formValue });
+      toast.success("✅ New task added successfully!", { autoClose: 2000 });
+
+      // setValue([...value, formValue]);
+      // console.log(formValue.id);
     } else {
-      const updatedValue = value.map((item) =>
-        item.id === formValue.id ? formValue : item
-      );
-      setValue(updatedValue);
+      dispatch({ type: "UPDATE_TASK", payload: formValue });
+      toast.success("✏️ Task updated successfully!", { autoClose: 2000 });
+
+      // const updatedValue = value.map((item) =>
+      //   item.id === formValue.id ? formValue : item
+      // );
+      // setValue(updatedValue);
     }
     setUpdateValue(null);
     setFormValue({
@@ -121,10 +123,12 @@ export default function Form() {
           <select
             id="category"
             name="category"
+            required
             value={formValue.category}
             onChange={handleOnChange}
             className="w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-white shadow-sm focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500"
           >
+            <option value="">Select Category</option>
             <option value="todo">To-Do</option>
             <option value="inprogress">On Progress</option>
             <option value="done">Done</option>
